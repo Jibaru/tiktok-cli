@@ -23,7 +23,7 @@ export const intentList: Command = {
           : renderTable(data.intents, [
               { header: "ID", value: (intent) => bold(intent.id) },
               { header: "ACTION", value: (intent) => intent.plan.summary, maxWidth: 50 },
-              { header: "COMMAND", value: (intent) => `tiktok ${intent.argv.map((arg) => (/s/.test(arg) ? JSON.stringify(arg) : arg)).join(" ")}`, maxWidth: 70 },
+              { header: "COMMAND", value: (intent) => `tiktok ${intent.argv.map((arg) => (/\s/.test(arg) ? JSON.stringify(arg) : arg)).join(" ")}`, maxWidth: 70 },
               { header: "EXPIRES", value: (intent) => intent.expiresAt.slice(0, 16).replace("T", " ") },
             ]),
     });
