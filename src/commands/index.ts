@@ -5,6 +5,7 @@ import { authLogin, authLogout, authStatus } from "./auth.ts";
 import { doctor } from "./doctor.ts";
 import { intentApprove, intentDiscard, intentList } from "./intent.ts";
 import { killswitchOff, killswitchOn } from "./killswitch.ts";
+import { videoGet, videoList } from "./video.ts";
 
 const schema: Command = {
   path: ["schema", "show"],
@@ -32,6 +33,8 @@ const schema: Command = {
 };
 
 export const commands: Command[] = [
+  videoList,
+  videoGet,
   authLogin,
   authStatus,
   authLogout,

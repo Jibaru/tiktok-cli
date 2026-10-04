@@ -30,3 +30,4 @@
 - [phase1] **Runtime switched Bun → Node 22 (native type stripping).** Bun 1.2.0 on Windows hangs on Playwright `launchPersistentContext` (probe killed at 90s); identical script on Node 22.22 works. Bun kept as package manager + unit test runner. Bin: `#!/usr/bin/env node` on `src/main.ts`, installed with `npm link`.
 - [phase3] Node type stripping needs real `.ts` extensions in relative imports; cligentic blocks import `./x.js`. Rewrote block imports to `.ts`.
 - [phase5] Debug bundle network.json redacts csrf/session tokens; trace.zip cannot be redacted (holds cookies) — documented as local-only, never share.
+- [feature:video] Video analytics page fires two insight requests with video_info: a light one first (video_info only) and the full one. Match on video_view_realtime, not video_info.

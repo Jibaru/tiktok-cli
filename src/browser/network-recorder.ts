@@ -9,7 +9,7 @@ export type RecordedResponse = {
 };
 
 const MAX_ENTRIES = 60;
-const MAX_BODY = 8_000;
+const MAX_BODY = 32_000;
 const API_PATH = /\/(api|aweme|tiktok|tiktokstudio)\//;
 
 export class NetworkRecorder {

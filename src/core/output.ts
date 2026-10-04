@@ -82,8 +82,8 @@ export function renderTable<T>(rows: T[], columns: Column<T>[]): string {
   );
   const pad = (text: string, index: number) =>
     columns[index]?.align === "right" ? padStartVisible(text, widths[index] ?? 0) : padVisible(text, widths[index] ?? 0);
-  const header = columns.map((column, index) => muted(pad(column.header, index))).join("  ");
-  const body = cells.map((row) => row.map((cell, index) => pad(cell, index)).join("  "));
+  const header = muted(columns.map((column, index) => pad(column.header, index)).join("  ").trimEnd());
+  const body = cells.map((row) => row.map((cell, index) => pad(cell, index)).join("  ").trimEnd());
   return [header, ...body].join("\n");
 }
 
