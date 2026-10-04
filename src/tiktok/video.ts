@@ -4,6 +4,7 @@ export type Video = {
   id: string;
   description: string;
   createdAt: string;
+  scheduledAt: string | null;
   visibility: Visibility;
   status: number;
   views: number;
@@ -20,6 +21,7 @@ export type RawItem = {
   item_id: string;
   desc?: string;
   create_time?: string;
+  schedule_time?: string;
   visibility?: number;
   status?: number;
   play_count?: string;
@@ -50,11 +52,13 @@ export function videoUrl(username: string, id: string): string {
 
 const count = (value: string | number | undefined) => Number(value ?? 0) || 0;
 
-export function toVideo(item: RawItem, username: string): Video {
+export function toVideo(item: RawItem, username: string, now = Date.now()): Video {
+  const scheduled = count(item.schedule_time) * 1000;
   return {
     id: item.item_id,
     description: item.desc ?? "",
     createdAt: new Date(count(item.create_time) * 1000).toISOString(),
+    scheduledAt: scheduled > now ? new Date(scheduled).toISOString() : null,
     visibility: readVisibility(item.visibility),
     status: item.status ?? 0,
     views: count(item.play_count),

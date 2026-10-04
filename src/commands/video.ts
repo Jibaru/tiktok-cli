@@ -50,7 +50,7 @@ const VISIBILITY_LABEL: Record<Video["visibility"], string> = {
 function renderVideos(videos: Video[], hasMore: boolean): string {
   if (videos.length === 0) return muted("No videos yet. Post one with `tiktok video post <file>`.");
   const table = renderTable(videos, [
-    { header: "POSTED", value: (video) => video.createdAt.slice(0, 10) },
+    { header: "POSTED", value: (video) => (video.scheduledAt ? info(`⏱ ${video.scheduledAt.slice(0, 16).replace("T", " ")}`) : video.createdAt.slice(0, 10)) },
     { header: "ID", value: (video) => muted(video.id) },
     { header: "VISIBILITY", value: (video) => VISIBILITY_LABEL[video.visibility] },
     { header: "VIEWS", value: (video) => bold(compactNumber(video.views)), align: "right" },
@@ -143,6 +143,7 @@ function fromInsight(insight: VideoInsight, username: string, listed?: Video): V
     id: info.aweme_id!,
     description: info.desc ?? "",
     createdAt: new Date((info.create_time ?? 0) * 1000).toISOString(),
+    scheduledAt: listed?.scheduledAt ?? null,
     visibility: listed?.visibility ?? "unknown",
     status: listed?.status ?? 0,
     views: stats.play_count ?? 0,

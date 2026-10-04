@@ -69,3 +69,11 @@ describe("comment mapping", () => {
     expect(isUnansweredQuery('{"filterConditions":[]}')).toBe(false);
   });
 });
+
+describe("scheduled videos", () => {
+  test("a schedule_time in the future becomes scheduledAt; a past one is a normal post", () => {
+    const now = Date.parse("2026-10-04T19:20:00Z");
+    expect(toVideo({ item_id: "1", create_time: "1791141360", schedule_time: "1791219600" }, "me", now).scheduledAt).toBe("2026-10-05T17:00:00.000Z");
+    expect(toVideo({ item_id: "1", create_time: "1791132963", schedule_time: "1791132963" }, "me", now).scheduledAt).toBeNull();
+  });
+});

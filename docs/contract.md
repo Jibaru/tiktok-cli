@@ -65,7 +65,7 @@ Gated commands:
 Flags: `--limit <n>` (default 20), `--sort posted|views|likes|comments`.
 `data: { videos: Video[], hasMore: boolean }`
 
-`Video = { id, description, createdAt (ISO), visibility: "everyone"|"followers"|"friends"|"only-me"|"unknown", status, views, likes, comments, shares, saves, durationSec, coverUrl, url }`
+`Video = { id, description, createdAt (ISO), scheduledAt (ISO|null), visibility: "everyone"|"followers"|"friends"|"only-me"|"unknown", status, views, likes, comments, shares, saves, durationSec, coverUrl, url }`
 
 ### `video get <id>`
 `data: { video: Video, analytics: { views: Series, avgWatchSec?, finishRate?, newFollowers? } }`
