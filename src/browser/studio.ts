@@ -38,7 +38,7 @@ export async function readJson<T>(response: Response): Promise<T> {
   }
 }
 
-export function assertTikTokOk<T extends TikTokEnvelope>(body: T, action: string): T {
+export function assertTikTokOk<T>(body: T & TikTokEnvelope, action: string): T {
   const code = body.status_code ?? body.statusCode ?? 0;
   if (code === 0) return body;
   throw new AppError("API_ERROR", `TikTok rejected ${action}.`, {

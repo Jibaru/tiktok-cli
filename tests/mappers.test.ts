@@ -45,3 +45,27 @@ describe("analytics overview layout", () => {
     expect(overview.metrics.views.points.every((point) => point.value === null)).toBe(true);
   });
 });
+
+import { isUnansweredQuery, toComment } from "../src/tiktok/comment.ts";
+
+describe("comment mapping", () => {
+  test("commentsV2 rows become Comment", () => {
+    const comment = toComment({
+      commentId: "7692860095478580001",
+      text: "hola test 1",
+      createTime: 1791133584,
+      likeCount: 0,
+      replyCount: 1,
+      hasCreatorLiked: false,
+      user: { uid: "1", uniqueId: "fan", nickname: "Fan" },
+      item: { itemId: "9", desc: "video" },
+    });
+    expect(comment).toMatchObject({ id: "7692860095478580001", replies: 1, author: { username: "fan" }, video: { id: "9" } });
+    expect(comment.createdAt).toBe("2026-10-04T17:06:24.000Z");
+  });
+
+  test("unanswered requests are recognised by the creator_replied filter", () => {
+    expect(isUnansweredQuery('{"filterConditions":[{"fieldName":"creator_replied","op":0,"field":"0"}]}')).toBe(true);
+    expect(isUnansweredQuery('{"filterConditions":[]}')).toBe(false);
+  });
+});

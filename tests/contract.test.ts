@@ -67,3 +67,15 @@ describe("write gate", () => {
     expect(run("auth", "logout", "--dry-run").json.data.dryRun).toBe(true);
   });
 });
+
+describe("reply validation (no browser)", () => {
+  test("rejects a non-numeric comment id before opening Chrome", () => {
+    expect(run("comment", "reply", "abc", "hola").json.error.code).toBe("VALIDATION");
+  });
+
+  test("rejects replies over 150 characters", () => {
+    const { json } = run("comment", "reply", "7692860095478580001", "x".repeat(151));
+    expect(json.error.code).toBe("VALIDATION");
+    expect(json.error.message).toContain("150");
+  });
+});

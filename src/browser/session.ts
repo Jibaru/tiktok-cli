@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { chromium, type BrowserContext, type Page } from "playwright-core";
 import type { Context } from "../core/command.ts";
-import { AppError, toAppError } from "../core/errors.ts";
+import { AppError, toAppError, type ErrorCode } from "../core/errors.ts";
 import { ensureDir } from "../core/paths.ts";
 import { step } from "../core/output.ts";
 import { writeDebugBundle } from "./debug-bundle.ts";
@@ -12,6 +12,8 @@ export type BrowserSession = {
   page: Page;
   recorder: NetworkRecorder;
 };
+
+const EXPECTED_ERRORS = new Set<ErrorCode>(["VALIDATION", "APPROVAL_REQUIRED", "APPROVAL_DENIED", "KILLSWITCH"]);
 
 type OpenOptions = {
   headed?: boolean;
@@ -31,6 +33,7 @@ export async function withBrowser<T>(
     return result;
   } catch (error) {
     const appError = toAppError(error);
+    if (EXPECTED_ERRORS.has(appError.code)) throw appError;
     const bundle = await writeDebugBundle({ debugRoot: ctx.paths.debug, command: ctx.command, ...session, error: appError });
     throw appError.withDebugBundle(bundle);
   } finally {

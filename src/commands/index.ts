@@ -3,6 +3,7 @@ import { commandName } from "../core/command.ts";
 import { SCHEMA_VERSION, VERSION } from "../core/version.ts";
 import { analyticsOverview } from "./analytics.ts";
 import { authLogin, authLogout, authStatus } from "./auth.ts";
+import { commentInbox, commentList, commentReply } from "./comment.ts";
 import { doctor } from "./doctor.ts";
 import { intentApprove, intentDiscard, intentList } from "./intent.ts";
 import { killswitchOff, killswitchOn } from "./killswitch.ts";
@@ -37,6 +38,9 @@ export const commands: Command[] = [
   videoList,
   videoGet,
   analyticsOverview,
+  commentList,
+  commentInbox,
+  commentReply,
   authLogin,
   authStatus,
   authLogout,
