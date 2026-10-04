@@ -23,7 +23,7 @@ type RawDay = { status?: number; value?: number } | number | null;
 type HistoryResponse = Record<string, RawDay[] | undefined>;
 
 export type DailyPoint = { date: string; value: number | null };
-export type Metric = { total: number; previousTotal: number; change: number | null; points: DailyPoint[] };
+export type Metric = { total: number | null; previousTotal: number | null; change: number | null; points: DailyPoint[] };
 
 export type Overview = {
   range: { days: number; from: string; to: string };
@@ -75,13 +75,14 @@ function toMetric(days: RawDay[] | undefined, range: number, dates: string[]): M
   const values = (days ?? []).map(valueOf);
   const previous = values.slice(0, range);
   const current = values.slice(range, range * 2);
-  const sum = (list: (number | null)[]) => list.reduce<number>((total, value) => total + (value ?? 0), 0);
+  const sum = (list: (number | null)[]) =>
+    list.every((value) => value === null) ? null : list.reduce<number>((total, value) => total + (value ?? 0), 0);
   const total = sum(current);
   const previousTotal = sum(previous);
   return {
     total,
     previousTotal,
-    change: previousTotal > 0 ? (total - previousTotal) / previousTotal : null,
+    change: total !== null && previousTotal ? (total - previousTotal) / previousTotal : null,
     points: current.map((value, index) => ({ date: dates[index] ?? "", value })),
   };
 }
@@ -126,7 +127,7 @@ function renderOverview(overview: Overview): string {
   const rows = Object.entries(overview.metrics) as [MetricName, Metric][];
   const table = renderTable(rows, [
     { header: "METRIC", value: ([name]) => LABELS[name] },
-    { header: "TOTAL", value: ([, metric]) => bold(compactNumber(metric.total)), align: "right" },
+    { header: "TOTAL", value: ([, metric]) => (metric.total === null ? muted("–") : bold(compactNumber(metric.total))), align: "right" },
     { header: "VS PREV", value: ([, metric]) => formatChange(metric.change), align: "right" },
     { header: "TREND", value: ([, metric]) => info(sparkline(metric.points.map((point) => point.value ?? 0))) },
   ]);

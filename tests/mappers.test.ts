@@ -36,13 +36,14 @@ describe("analytics overview layout", () => {
     expect(overview.metrics.views).toMatchObject({ total: 14, previousTotal: 7, change: 1 });
     expect(overview.metrics.views.points).toHaveLength(7);
     expect(overview.dataReady).toBe(true);
-    expect(overview.metrics.likes.total).toBe(0);
+    expect(overview.metrics.likes.total).toBeNull();
   });
 
   test("status 2 days are missing values, not zeros", () => {
     const overview = toOverview({ vv_history: Array(16).fill({ status: 2 }) }, null, 7);
     expect(overview.dataReady).toBe(false);
     expect(overview.metrics.views.points.every((point) => point.value === null)).toBe(true);
+    expect(overview.metrics.views).toMatchObject({ total: null, previousTotal: null, change: null });
   });
 });
 

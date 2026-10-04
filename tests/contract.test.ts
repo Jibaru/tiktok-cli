@@ -50,6 +50,7 @@ describe("write gate", () => {
     expect(exitCode).toBe(2);
     expect(json.error.code).toBe("APPROVAL_REQUIRED");
     expect(json.meta.nextSteps[0]).toBe(`tiktok intent approve ${json.error.intentId}`);
+    expect(Date.parse(json.error.expiresAt)).toBeGreaterThan(Date.now());
     const listed = run("intent", "list").json;
     expect(listed.data.intents.map((intent: { id: string }) => intent.id)).toContain(json.error.intentId);
   });

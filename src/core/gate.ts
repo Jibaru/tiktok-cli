@@ -45,7 +45,7 @@ export async function authorize(ctx: Context, plan: Plan): Promise<Authorization
   throw new AppError("APPROVAL_REQUIRED", `"${plan.action}" needs a human approval.`, {
     cause: "Write commands never run unattended.",
     hint: `tiktok intent approve ${intent.id}`,
-    extra: { intentId: intent.id, plan },
+    extra: { intentId: intent.id, expiresAt: intent.expiresAt, plan },
   });
 }
 

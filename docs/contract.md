@@ -113,7 +113,7 @@ Needs `--video <id>` only if the comment is not found in the inbox window. Gated
 - `nextSteps` only contains runnable `tiktok …` commands; prose hints stay in `error.hint`.
 - `--help` / bare invoke in machine mode returns the `schema` envelope.
 - Blocked writes (killswitch, approval required) are audited as `blocked`.
-- `analytics overview --days 7|28|60|365`; `data.metrics.*.points[].value` is `null` when TikTok has no data yet (`dataReady: false`).
+- `analytics overview --days 7|28|60|365`; `total`, `previousTotal`, `change` and `points[].value` are `null` when TikTok has no data yet (`dataReady: false`); `APPROVAL_REQUIRED` errors carry `expiresAt`.
 - `video get` analytics `views.points` are **hourly** realtime buckets, not days.
 - `video update` accepts `followers|friends|only-me` (no `everyone`: unobserved on a private account).
 - Outgoing `post/v1` and `post/edit/v1` requests are intercepted: post aborts unless caption and `schedule_time` match; edit aborts unless `aweme_id` and the delete flag match.
