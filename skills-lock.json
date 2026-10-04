@@ -13,6 +13,12 @@
       "skillPath": "skills/cli-build/SKILL.md",
       "computedHash": "ac94f040928adb8cfc5c07c4b1809e0de090bfd3834bc95faf489f2f7d427f9d"
     },
+    "cligentic": {
+      "source": "Railly/cligentic",
+      "sourceType": "github",
+      "skillPath": "skills/cligentic/SKILL.md",
+      "computedHash": "8f447a71aa8f46071c1d3dccc910e08e12977bcb78ea0af663930565a32acedd"
+    },
     "grill-me": {
       "source": "mattpocock/skills",
       "sourceType": "github",

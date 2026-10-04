@@ -1,0 +1,41 @@
+{
+  "skill_name": "cligentic",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm building a TypeScript CLI that submits brokerage orders. It already uses Bun but has no components.json. Add machine-readable output, a preview and approval gate, and an audit trail that survives a crash.",
+      "expected_output": "Inspects the project contract, registers @cligentic in package.json, views relevant live blocks, chooses and installs a justified closure, wires call sites, and verifies non-TTY and failure behavior.",
+      "files": [],
+      "expectations": [
+        "Registers @cligentic with the package.json registry flow and explicitly preserves the absence of components.json.",
+        "Searches or views the live registry before choosing blocks rather than relying on a static catalog.",
+        "Selects JSON mode, trust gating, and crash-safe audit primitives with an adopt, hybrid, or reject reason.",
+        "Requires wiring call sites and observing non-TTY, refusal, and pending-before-side-effect audit behavior."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Retrofit cligentic into this existing TypeScript CLI. Its published agent API must keep returning {ok, data, meta}; I mainly need safer config writes and standard errors. Give me the implementation plan before changing files.",
+      "expected_output": "Stops at an advisory decision table, preserves the published envelope, adopts or hybridizes compatible blocks, and rejects any conflicting output helper with a concrete reason.",
+      "files": [],
+      "expectations": [
+        "Returns a plan without installing or changing project files.",
+        "Treats the published {ok, data, meta} envelope as higher priority than a conflicting shared block.",
+        "Evaluates config, atomic-write, and error-map from the live registry with explicit decisions.",
+        "Includes contract-focused verification and intended call-site checks."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Add a reusable retry-budget primitive to the cligentic registry. It came from a production CLI and needs documentation, generated registry output, and proof that a clean consumer can install it without components.json.",
+      "expected_output": "Uses the authoring branch, extracts a generic block into the right layer, updates source, registry, docs and catalog, runs all distribution builds, and verifies an isolated package.json-only consumer.",
+      "files": [],
+      "expectations": [
+        "Requires real provenance, a justified registry layer, and removal of project-specific details.",
+        "Accounts for registry source, registry.json, MDX documentation, README catalog, and generated site surfaces.",
+        "Runs the root build, site build, and package.json-only registry E2E.",
+        "Verifies a clean consumer with no components.json and checks generated JSON/raw source parity."
+      ]
+    }
+  ]
+}

@@ -11,7 +11,7 @@ Decided in a grilling session on 2026-10-04. Background research: `recon/tiktok-
 
 ## Stack
 
-- TypeScript + Bun, local use (`bun link`). Node APIs only so npm/binary stays a build-time choice.
+- TypeScript run directly by Node 22 (type stripping), Bun as package manager and test runner. Bun runtime rejected: hangs with Playwright on Windows (see friction.md). Local install via `npm link`.
 - Binary `tiktok`, alias `tt`. Noun-verb commands.
 - Code in English, modular, self-documenting, minimal comments.
 - One commit per feature, personal GitHub repo (Jibaru).

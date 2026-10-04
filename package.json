@@ -1,0 +1,30 @@
+{
+  "name": "tiktok-cli",
+  "version": "0.1.0",
+  "description": "TikTok Studio from the terminal, for humans and agents",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "tiktok": "src/main.ts",
+    "tt": "src/main.ts"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "start": "node src/main.ts"
+  },
+  "dependencies": {
+    "playwright-core": "^1.63.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^26.6.4",
+    "typescript": "^5.9"
+  },
+  "registries": {
+    "@cligentic": "https://cligentic.railly.dev/r/{name}.json"
+  }
+}
