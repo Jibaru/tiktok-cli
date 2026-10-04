@@ -6,6 +6,7 @@ import { authLogin, authLogout, authStatus } from "./auth.ts";
 import { commentInbox, commentList, commentReply } from "./comment.ts";
 import { doctor } from "./doctor.ts";
 import { intentApprove, intentDiscard, intentList } from "./intent.ts";
+import { videoPost } from "./post.ts";
 import { killswitchOff, killswitchOn } from "./killswitch.ts";
 import { videoGet, videoList } from "./video.ts";
 
@@ -37,6 +38,7 @@ const schema: Command = {
 export const commands: Command[] = [
   videoList,
   videoGet,
+  videoPost,
   analyticsOverview,
   commentList,
   commentInbox,

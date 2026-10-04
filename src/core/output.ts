@@ -28,7 +28,7 @@ export function printSuccess(command: string, mode: Mode, result: CommandResult,
 
 export function printError(command: string, mode: Mode, error: AppError): void {
   if (mode === "json") {
-    writeJson({ ok: false, error: error.toJSON(), meta: { command, version: VERSION, nextSteps: error.details.hint ? [error.details.hint] : [] } });
+    writeJson({ ok: false, error: error.toJSON(), meta: { command, version: VERSION, nextSteps: error.details.hint?.startsWith("tiktok ") ? [error.details.hint] : [] } });
     return;
   }
   const { cause, hint, debugBundle, logId } = error.details;
