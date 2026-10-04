@@ -7,6 +7,7 @@ import { commentInbox, commentList, commentReply } from "./comment.ts";
 import { doctor } from "./doctor.ts";
 import { intentApprove, intentDiscard, intentList } from "./intent.ts";
 import { videoPost } from "./post.ts";
+import { videoDelete, videoUpdate } from "./video-edit.ts";
 import { killswitchOff, killswitchOn } from "./killswitch.ts";
 import { videoGet, videoList } from "./video.ts";
 
@@ -39,6 +40,8 @@ export const commands: Command[] = [
   videoList,
   videoGet,
   videoPost,
+  videoUpdate,
+  videoDelete,
   analyticsOverview,
   commentList,
   commentInbox,
