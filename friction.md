@@ -31,3 +31,4 @@
 - [phase3] Node type stripping needs real `.ts` extensions in relative imports; cligentic blocks import `./x.js`. Rewrote block imports to `.ts`.
 - [phase5] Debug bundle network.json redacts csrf/session tokens; trace.zip cannot be redacted (holds cookies) — documented as local-only, never share.
 - [feature:video] Video analytics page fires two insight requests with video_info: a light one first (video_info only) and the full one. Match on video_view_realtime, not video_info.
+- [feature:video] Realtime insight series (interval 1) are HOURLY: first bucket 16:00Z for a video posted 16:56Z. Inferred from bucket alignment; label says 'hourly points'. Committed one red test by piping bun test into tail (exit code lost) — use `bun test && ...` without pipes before committing.

@@ -21,7 +21,7 @@ describe("video mapping", () => {
 
 describe("insight series", () => {
   test("epoch keys become ISO dates", () => {
-    expect(toSeries({ list: [{ key: "1791129600", value: 4 }], total: 4 })).toEqual({ total: 4, points: [{ date: "2026-10-04T05:00:00.000Z", value: 4 }] });
+    expect(toSeries({ list: [{ key: "1791129600", value: 4 }], total: 4 })).toEqual({ total: 4, points: [{ date: "2026-10-04T16:00:00.000Z", value: 4 }] });
     expect(toSeries(null)).toEqual({ total: 0, points: [] });
   });
 });

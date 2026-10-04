@@ -172,7 +172,7 @@ function renderVideo({ video, analytics }: { video: Video; analytics: VideoAnaly
     "",
     [stat("views", video.views), stat("likes", video.likes), stat("comments", video.comments), stat("shares", video.shares), stat("saves", video.saves)].join("   "),
     "",
-    `${muted("Views     ")} ${info(sparkline(analytics.views.points.map((point) => point.value)))}  ${muted(`${analytics.views.points.length} days`)}`,
+    `${muted("Views     ")} ${info(sparkline(analytics.views.points.map((point) => point.value)))}  ${muted(`${analytics.views.points.length} hourly points`)}`,
     `${muted("Finished  ")} ${percent(analytics.finishRate)}`,
     `${muted("Avg watch ")} ${analytics.avgWatchSec === null ? muted("–") : `${analytics.avgWatchSec.toFixed(1)}s`}`,
     `${muted("Followers ")} ${analytics.newFollowers ?? muted("–")} new`,
