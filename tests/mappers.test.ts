@@ -25,3 +25,23 @@ describe("insight series", () => {
     expect(toSeries(null)).toEqual({ total: 0, points: [] });
   });
 });
+
+import { toOverview } from "../src/commands/analytics.ts";
+
+describe("analytics overview layout", () => {
+  test("[previous N][current N][2 pending] splits into totals and change", () => {
+    const day = (value: number) => ({ status: 0, value });
+    const vv = [...Array(7).fill(day(1)), ...Array(7).fill(day(2)), { status: 2 }, { status: 2 }];
+    const overview = toOverview({ vv_history: vv }, 5, 7);
+    expect(overview.metrics.views).toMatchObject({ total: 14, previousTotal: 7, change: 1 });
+    expect(overview.metrics.views.points).toHaveLength(7);
+    expect(overview.dataReady).toBe(true);
+    expect(overview.metrics.likes.total).toBe(0);
+  });
+
+  test("status 2 days are missing values, not zeros", () => {
+    const overview = toOverview({ vv_history: Array(16).fill({ status: 2 }) }, null, 7);
+    expect(overview.dataReady).toBe(false);
+    expect(overview.metrics.views.points.every((point) => point.value === null)).toBe(true);
+  });
+});

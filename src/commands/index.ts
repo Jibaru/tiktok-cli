@@ -1,6 +1,7 @@
 import type { Command } from "../core/command.ts";
 import { commandName } from "../core/command.ts";
 import { SCHEMA_VERSION, VERSION } from "../core/version.ts";
+import { analyticsOverview } from "./analytics.ts";
 import { authLogin, authLogout, authStatus } from "./auth.ts";
 import { doctor } from "./doctor.ts";
 import { intentApprove, intentDiscard, intentList } from "./intent.ts";
@@ -35,6 +36,7 @@ const schema: Command = {
 export const commands: Command[] = [
   videoList,
   videoGet,
+  analyticsOverview,
   authLogin,
   authStatus,
   authLogout,

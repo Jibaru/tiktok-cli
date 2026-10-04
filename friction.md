@@ -32,3 +32,4 @@
 - [phase5] Debug bundle network.json redacts csrf/session tokens; trace.zip cannot be redacted (holds cookies) — documented as local-only, never share.
 - [feature:video] Video analytics page fires two insight requests with video_info: a light one first (video_info only) and the full one. Match on video_view_realtime, not video_info.
 - [feature:video] Realtime insight series (interval 1) are HOURLY: first bucket 16:00Z for a video posted 16:56Z. Inferred from bucket alignment; label says 'hourly points'. Committed one red test by piping bun test into tail (exit code lost) — use `bun test && ...` without pipes before committing.
+- [feature:analytics] Account history = array of length 2N+2 ([prev N][current N][2 not final]); entries {status:0,value} when ready, {status:2} when not. Populated shape inferred from follower_num {status:0,value}; NOT observed on a populated account. Range selector is locale-bound text ('Los últimos N días').
