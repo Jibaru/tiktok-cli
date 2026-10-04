@@ -1,0 +1,18 @@
+# Friction log — TikTok Studio recon
+
+- [terrain] Unauthenticated /tiktokstudio does NOT redirect to /login: it renders the login panel at the same URL. AUTH detection must look at page content/heading, not URL. (00-studio-cold.png)
+- [instrument] agent-browser bundled Chrome skipped up front per anti-bot.md; using real Chrome via --executable-path + isolated --profile dir + AutomationControlled disabled.
+- [instrument] agent-browser HAR export has empty response bodies. Use `network requests --filter` + `network request <id> --json` (responseBody field) instead. Some older requests lose their body (evicted) — re-trigger the page before reading.
+- [terrain] Studio data endpoints (item_list, commentsV2, multiGetFollowRelationCount) carry msToken + X-Bogus + X-Gnarly. Confirms: let the page sign, intercept responses; no out-of-browser replay.
+- [terrain] Test account is empty (no posts, no comments): read shapes for items/comments can't be observed until content exists. Upload flow must run first.
+- [terrain] After attaching a file, a first-run modal 'activar revisiones automáticas de contenido' blocks the form (whole a11y tree = the dialog). Post flow must detect & dismiss known modals with 'Cancelar'.
+- [terrain] Selecting 'Programación' first time opens a consent dialog ('¿Permitir que el vídeo se guarde para una publicación programada?' Cancelar/Permitir). Consent = human-only per cli-build; not accepted. Schedule picker shape UNVERIFIED.
+- [terrain] Description editor is Draft.js: synthetic fast typing DROPS chars ('test cli recon' -> 'tst li eco'); document.execCommand('insertText') CRASHES Studio ('Hubo un problema'). Need paste-based or per-key delayed input.
+- [terrain] Draft.js description: clipboard write + Control+v WORKS (text intact, hashtags kept). keyboard type with real key events still drops c/r/n consistently (likely Studio hotkeys). Use paste.
+- [terrain] Privacy 'Solo tú' disables both 'Ahora'/'Programación' radios: private posts cannot be scheduled. CLI must reject --schedule with --privacy only-me (VALIDATION).
+- [terrain] Comment publish = GET-style POST /api/comment/publish/ with text/aweme_id in QUERY (no body), signed. Returns HTTP 200 + status_code 2209 'Este vídeo no existe' on an only-me video: private videos can't be commented even by owner. HTTP status is useless for errors; envelope status_code is the signal.
+- [terrain] Video page has stable data-e2e hooks: comment-input, comment-post, comment-text, comment-count, comments.
+- [terrain] Studio comment filter dropdown options ('Sin respuesta'/'Con respuesta') are NOT in the a11y tree; only visible in screenshot. Use find text.
+- [terrain] Read vs write visibility enums differ (read: only-me=2, friends=3; edit write: friends=2; post write: only-me visibility_type=1).
+- [terrain] item_list comment_count lags (0 while 2 comments exist).
+- [skill] IR (.surfacer.json) skipped: every useful endpoint is signed and unreplayable outside the page, so an HTTP descriptor would mislead `surfacer check`. Report only.
