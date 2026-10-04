@@ -98,3 +98,11 @@ Implementer: map labels per endpoint; do not share one enum.
   - Errors: classify by envelope `status_code` (+ `logid` in the error), login-panel detection for `AUTH_EXPIRED`, missing element/response timeout for `UI_CHANGED`.
   - Writes: verify receipt (`status_code:0` + id) **and** post-state, as done here.
   - Validation: reject `--schedule` with only-me privacy; warn that only-me videos cannot be commented.
+
+## Verified during the build (2026-10-04)
+
+- `post/v1` carries `schedule_time` as epoch seconds; a scheduled post went through with the CLI's guard checking it.
+- Studio sends a `HEAD` to `/api/comment/publish/` before the `POST`. Match on method.
+- Content rows are `[data-tt="components_PostTable_Absolute"]`; scheduled rows have a disabled privacy selector and no "Anclar arriba".
+- Realtime per-video insight series are hourly buckets.
+- Headless Chrome with the persisted profile works for every read and write tested; no captcha seen.
