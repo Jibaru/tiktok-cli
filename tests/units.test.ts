@@ -41,3 +41,17 @@ describe("output helpers", () => {
     expect(sparkline([0, 0])).toBe("▁▁");
   });
 });
+
+import { outcomeUnknown } from "../src/core/errors.ts";
+
+describe("errors after submit", () => {
+  test("a failure after submitting is reported as an unknown outcome with a verify hint", () => {
+    const error = outcomeUnknown(new AppError("UI_CHANGED", "TikTok returned a non-JSON response."), "tiktok comment list 1");
+    expect(error.toJSON()).toMatchObject({ code: "UI_CHANGED", retryable: false, outcome: "unknown", hint: expect.stringContaining("tiktok comment list 1") });
+  });
+
+  test("a definitive TikTok rejection stays a plain API_ERROR", () => {
+    const rejected = new AppError("API_ERROR", "TikTok rejected the reply.", { tiktokCode: 2209 });
+    expect(outcomeUnknown(rejected, "x")).toBe(rejected);
+  });
+});

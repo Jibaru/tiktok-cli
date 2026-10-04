@@ -60,6 +60,17 @@ export class AppError extends Error {
   }
 }
 
+export function outcomeUnknown(error: unknown, verifyCommand: string): AppError {
+  const original = toAppError(error);
+  if (original.code === "API_ERROR") return original;
+  return new AppError(original.code, `${original.message} The action was already submitted and may have gone through.`, {
+    ...original.details,
+    hint: `Verify with \`${verifyCommand}\` before retrying, to avoid a duplicate.`,
+    retryable: false,
+    extra: { ...original.details.extra, outcome: "unknown" },
+  });
+}
+
 export function toAppError(error: unknown): AppError {
   if (error instanceof AppError) return error;
   if (error instanceof Error && /net::ERR_|ECONNRESET|ENOTFOUND|ETIMEDOUT/.test(error.message)) {

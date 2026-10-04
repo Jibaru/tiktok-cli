@@ -3,7 +3,7 @@ import { withBrowser } from "../browser/session.ts";
 import { assertTikTokOk, awaitOrClassify, endpoint, openStudio, readJson } from "../browser/studio.ts";
 import { bold, muted, ok } from "../cli/platform/style.ts";
 import { result, type Command, type Context } from "../core/command.ts";
-import { AppError } from "../core/errors.ts";
+import { AppError, outcomeUnknown } from "../core/errors.ts";
 import { audited, authorize, recordDryRun } from "../core/gate.ts";
 import type { Plan } from "../core/intents.ts";
 import { renderTable, step } from "../core/output.ts";
@@ -196,11 +196,15 @@ export const commentReply: Command = {
         return { dryRun: true as const, plan };
       }
       return audited(ctx, plan, async () => {
-        const published = page.waitForResponse(endpoint(COMMENT_PUBLISH_PATH), { timeout: 30_000 });
+        const published = page.waitForResponse(endpoint(COMMENT_PUBLISH_PATH, "POST"), { timeout: 30_000 });
         published.catch(() => undefined);
         step(ctx.mode, "Sending reply…");
         await page.locator('textarea[placeholder="Responder al comentario"]').press("Enter");
-        const body = assertTikTokOk(await readJson<ReplyResponse>(await awaitOrClassify(page, published, "sending the reply")), "the reply");
+        const body = await readJson<ReplyResponse>(await awaitOrClassify(page, published, "sending the reply"))
+          .then((response) => assertTikTokOk(response, "the reply"))
+          .catch((error) => {
+            throw outcomeUnknown(error, `tiktok comment list ${comment.video.id}`);
+          });
         if (body.comment?.reply_id !== commentId || !body.comment.cid) {
           throw new AppError("API_ERROR", "TikTok accepted a reply that does not match the requested comment.", {
             cause: `Expected reply_id ${commentId}, got ${body.comment?.reply_id ?? "none"}.`,
