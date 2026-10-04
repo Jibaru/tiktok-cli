@@ -45,6 +45,7 @@ Note the typo `insigh_type` is the real parameter name.
 | Publish video | UI: `/tiktokstudio/upload` → `input[type=file]` → description → privacy → "Publicar". Network: `POST /tiktok/web/project/post/v1/` (signed) | `single_post_resp_list[0].{item_id,status_code:0}`, `project_id` | Redirect to `/tiktokstudio/content`; item in `item_list` |
 | Change privacy | UI: content row privacy button → option. Network: `POST /tiktok/post/edit/v1/` body `{"aweme_id","scene":1,"visibility":{"visibility":N}}` | `edit_result.edit_biz_result[].status_code:0` | `item_list` visibility changed |
 | Comment (web video page) | UI: `[data-e2e=comment-input]` textbox → paste → "Publicar". Network: `POST /api/comment/publish/?aweme_id&text&text_extra` (signed, params in **query**) | `comment.cid`, `status_code:0` | Appears in Studio inbox |
+| Delete video | UI: content row (viewport ≥1920 wide) → "⋯" → "Eliminar" → confirm "Eliminar". Network: `POST /tiktok/post/edit/v1/` body `{"aweme_id","scene":1,"delete":{"delete_type":1}}` | `edit_result.edit_biz_result[].status_code:0` | Gone from `item_list`; restorable 30 days |
 | Reply (Studio) | UI: `/tiktokstudio/comment` → "Responder" → `textarea[placeholder="Responder al comentario"]` → Enter. Network: same `/api/comment/publish/` + `reply_id=<commentId>&reply_to_reply_id=0` | `status_code:0`, `status_msg:"Comentario enviado correctamente"`, new `cid` | Unanswered inbox 1 → 0 |
 
 ### Upload form specifics
@@ -55,6 +56,8 @@ Note the typo `insigh_type` is the real parameter name.
 - Privacy options on a **private account**: Seguidores / Amigos / Solo tú (no "Todos").
 - **"Solo tú" disables scheduling** (both radios disabled).
 - **Only-me videos cannot receive comments**, not even from the owner (2209).
+- **Scheduling** (observed after the user accepted the consent by hand): selecting "Programación" shows two **readOnly** `TUXTextInputCore-input` fields, time (`HH:MM`, default ≈ now+15 min) and date (`YYYY-MM-DD`). Time picker = hour column + minute column in **5-minute steps**; date picker = month calendar with prev/next arrows, past days disabled. Submit button label changes from "Publicar" to "Programar". Discard asks "¿Descartar esta publicación?" → "Descartar".
+- The consent is per account or per browser profile: **unverified**; check on the CLI profile first run.
 
 ### Visibility enums (they differ by endpoint)
 
@@ -72,11 +75,11 @@ Implementer: map labels per endpoint; do not share one enum.
 |---|---|
 | Signed endpoints | Got past: page issues requests, client reads responses |
 | Login / anti-bot | Got past: manual QR login once in a real Chrome headed profile; no captcha seen in this session |
-| Schedule consent dialog ("¿Permitir que el vídeo se guarde para una publicación programada?") | **Not passed by design**: consent is human-only. Schedule picker shape unobserved |
+| Schedule consent dialog ("¿Permitir que el vídeo se guarde para una publicación programada?") | Passed by the user by hand (human-only consent). Picker observed |
 
 ## Needs verification
 
-- **Schedule picker** (date/time widgets, request field): user accepts the consent dialog once by hand, then select "Programación" on a non-private post and capture `post/v1` `schedule_time`.
+- **Schedule request field**: picker is mapped, but no scheduled post was submitted; confirm `post/v1` carries `schedule_time` on first `video post --schedule`.
 - **Visibility codes for Seguidores/Todos**: change test video to Seguidores and read `item_list` + `post/edit` body.
 - **Pagination**: `item_list` cursor/has_more and `commentsV2` cursor with >1 page — needs an account with more content.
 - **Session lifetime**: how long the persisted profile stays logged in. Re-check `tiktok doctor` after days.

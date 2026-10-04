@@ -16,3 +16,6 @@
 - [terrain] Read vs write visibility enums differ (read: only-me=2, friends=3; edit write: friends=2; post write: only-me visibility_type=1).
 - [terrain] item_list comment_count lags (0 while 2 comments exist).
 - [skill] IR (.surfacer.json) skipped: every useful endpoint is signed and unreplayable outside the page, so an HTTP descriptor would mislead `surfacer check`. Report only.
+- [terrain] Studio content list hides the Acciones column below ~1600px viewport; set viewport 1920 wide for row actions (edit/analytics/comments/more).
+- [process] User accidentally published while accepting consent (clicked Publicar). Mitigation used: agent prepares form and opens the dialog itself, user clicks only the consent button. Accidental post deleted with user approval.
+- [terrain] Schedule pickers are readOnly inputs with popup columns (5-min steps) and a calendar; must be driven by clicks, not fill.
