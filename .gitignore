@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.*
+*.log
+
+# runtime state: browser profile, cookies, audit, debug bundles
+.tiktok-cli/
+profiles/
+debug/
+audit/
+*.har
+trace.zip
+recon/captures/

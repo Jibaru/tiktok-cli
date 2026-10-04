@@ -1,0 +1,147 @@
+# Gates
+
+Checks that stop a recon from producing a confident, wrong report. Each one exists because it failed in real work.
+
+## Before starting
+
+**Did you classify all four dimensions?** Record access, planes, acceptance proof, and maximum consequence. A product category such as camera, mobile app, or desktop app is not a recon profile.
+
+**Is every plane explicitly authorized?** Owning a device does not automatically authorize a cloud account, another user's data, a third-party service, or destructive firmware changes. Record authority per plane.
+
+**Did you choose the proof before the probe?** Enumeration, replay, state transition, contract conformance, round trip, receipt plus poststate, execution placement, and boot plus recovery answer different questions. Without a selected proof, a convenient success signal becomes the verdict.
+
+**Is the consequence ceiling explicit?** Default to passive. Reversible, creative, persistent, destructive, and external actions each require increasing evidence and operator clarity. Firmware writes require explicit authorization, backup, recovery, and an expendable target.
+
+**Did you search for an official API?** The cheapest recon is reading a spec. Search for docs, an OpenAPI file, and an SDK before opening a browser. Skipping this and going straight to traffic capture is the most common way to spend hours on a solved problem.
+
+**Do you have credentials for a login-walled target?** If not, the output will be a list of unknowns, not a map. Say that before starting, and ask whether an account is obtainable. Six corpus reports skipped this gate and produced tables where 80 to 90 percent of rows were unverified.
+
+**Is there a public path to the same data?** Many services with a login also expose a public consultation form or an open-data export. Check before accepting a credential-blocked recon.
+
+## During capture
+
+**Are you keeping evidence separated by plane?** Evidence does not transfer across boundaries. BLE enumeration does not prove Wi-Fi control. A UI confirmation does not prove artifact persistence. USB mass storage does not prove a USB vendor protocol.
+
+**For a physical target, did you re-check identity after every mode change or reboot?** BLE names, USB interfaces, addresses, and routes can change. A valid receipt from the wrong interface is still the wrong target.
+
+**Did you distinguish transport completion, protocol receipt, and poststate?** A successful socket write, BLE write, USB transfer, or serial frame proves only transport. Record each layer independently.
+
+**Is the domain you captured where the functionality lives?**
+
+This failed three separate times in the corpus. In each case the capture targeted an institutional landing page while the actual service ran on a different subdomain. The result was a HAR full of marketing pages and an endpoint table full of nothing.
+
+Verify: the URL in your capture should be the one that serves the action you care about. If you captured a page listing links to services, you captured the directory, not the service.
+
+**Did you drive the actual action?** Endpoints appear on interaction, not on page load. A HAR from a bare `open` shows you the shell.
+
+**Is a state you classified stable across calls?** Ask for the same resource twice. A value that differs between responses is not an attribute of the resource, and filing it next to the stable ones makes the client treat it as fixed. In one recon a seat state mapped as one of eight statuses turned out to be the seat the provider pre-assigns to each transaction: three orders on the same session returned three different seats. It went from a curious color to the default suggestion for the reserve command, and only because someone asked what it was.
+
+**Did you reproduce without credentials before blaming your account?** A failure that persists with no identity is not about your identity. To separate "they blocked me" from "it is down for everyone", drop the session: public reads still returning 200 rules out an IP block, an endpoint answering 401 before its suspension message shows the session filter runs first, and a clean browser reaching the normal login panel rules out a ban.
+
+**Then keep going, because ruling out your identity does not name the cause.** In the run this came from, the three measurements correctly cleared the account and the report stopped there, treating the endpoint as blocked. It was scheduled maintenance. A transient outage and a permanent block produce the same symptom and demand opposite verdicts: one says wait and re-measure, the other says the surface is unreachable. Before writing either, check the provider's status page and social account, look for a maintenance window in the response body or headers, and **re-measure later**. A single measurement cannot tell a wall from a closed door.
+
+**A flow captured with a browser is not verified until you replay it without one.** The browser sends cookies by domain, follows redirects, and holds state, so a HAR records the outcome rather than the requirement. Phase 3 already says to replay a signature outside the browser; this generalizes it to the whole flow. Two first-use failures in one project had exactly this root: a cookie prefix and a required header, both invisible in the capture because the browser supplied them. **A third cause produces the identical symptom with nothing missing from the request at all:** the replay client's TLS fingerprint, not anything in the request. See [anti-bot.md](anti-bot.md).
+
+**An endpoint you assembled from bundle strings is not an endpoint.** A route built out of grepped constants is a guess, and a 404 page served under HTTP 200 will confirm it for you. On the first real run of this skill, four attempts were burned this way. Either the request appears in traffic you drove, or it goes under "Needs verification" with the interaction that would produce it. There is no third category.
+
+**Did you keep the evidence?** A finding whose HAR is gone cannot be re-verified. One corpus report claimed a recon technique had been used but the repository preserved no receipt, so the claim had to be re-derived from scratch. Save the HAR. Note the bundle hash if you read a bundle.
+
+## Before writing a finding
+
+Apply these per row of the endpoint table.
+
+**Did you observe this request, or infer it?** Observed means you saw it in traffic or reproduced it. Inferred means you read it in a bundle, guessed from a naming pattern, or found it in stale docs. Both are useful. Mixing them silently is not. Mark the column.
+
+**Did you verify the auth flow, or read it?** An auth flow you have not completed is a hypothesis. Especially true for anything involving a second factor, a certificate, or a signature.
+
+**If you extracted a signing algorithm, did you replay it?** A signing function read from minified code and never exercised is a guess with high confidence attached. Replay a signed request from outside the browser. The corpus case that did this discovered the signed message included fields nobody would have predicted; only the replay proved the shape.
+
+**Did you parse the response body, or trust the status code?** One login endpoint returned 200 for a wrong password, with the real outcome in a JSON field. Never conclude success from a status code alone on an endpoint you are characterizing.
+
+**Are you reporting a rate limit you measured?** If you did not read a header or probe, write "not measured".
+
+**For a command surface, did you record schema, output, exit state, and poststate?** Help text alone is cited evidence. One successful invocation without its failure behavior is partial conformance.
+
+**For an artifact, did the producer reopen it?** Parsing or modifying a file proves nothing about producer compatibility until it survives a round trip.
+
+**For an interactive surface, did the result survive the relevant boundary?** Reload, reopen, reconnect, or reboot when persistence is part of the claim.
+
+**For a device write, do you have both a receipt and independent poststate?** If either is absent, report transport progress rather than accepted control.
+
+**For firmware, are you still inside the authorized consequence ceiling?** Package unpacking and hashing are passive. Patching is creative. Flashing is persistent or destructive. Never let discovery silently promote the allowed consequence.
+
+## Before claiming a runtime finding
+
+**Did you verify where the work ran, or only that it did not error?** A device rarely refuses. It accepts the workload and quietly runs it on a slower unit. Absence of an error is not evidence of acceleration. Measure per compute unit.
+
+**Is your constraint set measured or cited?** A published characterization is a citation and belongs marked as one. What you exported, ran, and counted is your finding. Keeping them separate is what stops someone else's claim from becoming your unverified assumption.
+
+**Did you record the silicon, OS, and toolchain version?** A constraint true on one generation can be false on the next, and a report without those three cannot be re-checked.
+
+**Did you compare against a baseline on the same machine?** "Faster" with no same-size comparison under the same load is not a measurement.
+
+### Connected-device protocol gates
+
+**Did you record the exact context?** A device finding without model, hardware revision, firmware or `unknown`, host, OS, toolchain, transport, physical topology, mode, power, lock, activation, storage, and pairing state cannot be transferred safely to another session.
+
+**Which mutation rung did you reach, and was it approved?** Passive observation, ephemeral connection, read-only query, persistent authentication, state transition, data mutation, and firmware mutation are separate boundaries. Pairing is persistent device state.
+
+**Was capture active before interaction?** Enable notifications, reads, sniffing, or serial capture before authentication. Setup traffic can contain the state you are trying to discover.
+
+**Did you scope command support to target, transport, and mode?** A parser in a client, a command on another model, or a success on another transport is a citation, not proof here.
+
+**Did you distinguish receipt from state?** A response or ACK proves that a frame was handled. It does not prove success unless its status is parsed and the resulting state is independently observed.
+
+**Did you separate transport from application authorization?** TCP connect, UDP reachability, and write completion prove transport. Require a protocol-specific authorization or command response before claiming that the application session is registered.
+
+**Did you keep zero, null, silence, timeout, and rejection separate?** Correlate surprising values with another plane before assigning meaning.
+
+**Can the parser survive real streaming behavior?** Test bounds, checksums, fragmentation, coalescing, garbage prefixes, partial tails, and sliced buffers whose start index is not zero.
+
+**Did the decoder preserve field structure?** Do not reject or invent a logical value because one wire field looks incomplete. Confirm whether path, filename, extension, handle, or metadata are split across tagged fields and associate them only inside a measured record boundary.
+
+**Did you validate decoded cardinality twice?** Require the protocol's declared count to match decoded records, then compare the aggregate against an independent plane when available. A count-valid decode that also matches USB, storage, or device UI is a materially stronger receipt than readable output alone.
+
+**Did one probe incorrectly gate another?** HEAD, GET, range GET, and protocol-level metadata are separate observations unless the measured contract proves a dependency. A failed convenience probe must not suppress an independently authorized acceptance test.
+
+**Does the runner exit status describe the finding?** Completed system calls are not a successful recon. If every candidate method, selector, or endpoint failed, the runner must return nonzero so automation cannot record the run as passed.
+
+**Did you capture a control pair in one state window?** A positive result plus a nearby negative selector, mode, endpoint, or input distinguishes a real mapping from a permissive server or stale state. Record both without turning the negative control into repeated load.
+
+**Did you separate HTTP body bytes from HTTP success?** Error pages carry bytes too. Require an accepted status and expected method semantics, then record byte count and whether content was retained as independent facts.
+
+**Is the evidence compact and actually sanitized?** Log first occurrence, semantic changes, and a census. A normal hash is not redaction for a short or guessable payload. Keep identities, tokens, SSIDs, passphrases, filenames, and personal telemetry out of durable receipts.
+
+**Did you preserve persistent identity correctly?** Reusing a stable per-install pairing identity can be required for reproducibility. It belongs outside version control and must never appear in logs or reports.
+
+**Did you prove target identity independently of its address?** A private IP, gateway shape, ICMP reply, or route change can belong to the ordinary LAN as easily as the device. Require the link identity and a target-specific protocol signature in the same observation window before attributing service behavior to the target.
+
+**Did you separate operator observation from operator authorization?** A human confirming the device network, cable, prompt, or mode is link evidence. It is not consent for pairing, playback, settings, deletion, firmware, or another mutation. Record the confirmation and the approved mutation rung independently.
+
+**Did the failed run preserve enough private evidence for offline analysis?** A sanitized receipt explains the outcome, but a phase-tagged raw trace can prevent unnecessary device replay. Keep it outside version control with restrictive permissions and an explicit retention boundary.
+
+## Before claiming a backend type
+
+**Do not infer the stack from route names.** One endpoint named for one cloud provider served a completely different one, a leftover from a migration. Names lie. Infer the backend from response headers, error formats, and framework tells; or write "not determined".
+
+## Before delivering
+
+**Does the report distinguish what you know from what you assume?** Read it once as an implementer. Every line they would act on should be traceable to an observation.
+
+**Is the verdict stated?** "Build it", "build it narrowly", or "do not build yet, blocked on X". A report without a recommendation makes the reader redo your judgment.
+
+**Is the maintenance risk named?** An undocumented endpoint has no contract and no deprecation notice. If the plan depends on a minified signing function, a coordinate-clicked widget, or a scraped HTML structure, say that it will break. Roughly when, if you can tell.
+
+**Are the "needs verification" items actionable?** Each should say what would confirm it, not just that it is unconfirmed.
+
+**Does the verdict rest on the reason you gave for it?** A conclusion that survives a correction to its premise was not resting on that premise.
+
+In the run this skill came from, a verdict of "build it narrowly" held through three readings of the same target: first "the purchase flow is unmappable", then "it needs an account", then, with the account, the whole surface open and the real reason visible, which was that reading the seat map opens an order in the provider's system and a hold takes real inventory. Same verdict, three different justifications, and only the last one would have survived contact with a credential.
+
+Being right for two rounds by accident is not a success to record. When a premise turns out wrong and the verdict does not move, say so in the report: it tells the reader the verdict was load-bearing on something you had not named yet, and it is the honest version of a lucky call.
+
+## The failure this all prevents
+
+A recon report that reads as authoritative and is partly invention. The implementer builds against it, discovers the auth flow was never completed and half the endpoints do not exist, and now distrusts the whole document: including the parts that were correct and hard-won.
+
+Labeling uncertainty costs one column in a table. Losing the reader's trust costs the entire report.
