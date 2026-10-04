@@ -104,3 +104,16 @@ Needs `--video <id>` only if the comment is not found in the inbox window. Gated
 
 ### `schema [command]`
 `data: { version, commands: [{ name, args, flags, gated, output }] }`
+
+## Changes made during the build (v0.1.0 as shipped)
+
+- Shorthands: `videos` = `video list`, `stats` = `analytics overview`, `inbox` = `comment inbox`, `post` = `video post`, `doctor` = `doctor run`, `schema` = `schema show`.
+- Extra error codes: `APPROVAL_DENIED` (2, you answered no), `CONSENT_REQUIRED` (2, TikTok consent dialog only a human may accept, e.g. scheduled posts).
+- Any failure after a write was submitted carries `"outcome": "unknown"` and a `hint` naming the read command to verify before retrying.
+- `nextSteps` only contains runnable `tiktok …` commands; prose hints stay in `error.hint`.
+- `--help` / bare invoke in machine mode returns the `schema` envelope.
+- Blocked writes (killswitch, approval required) are audited as `blocked`.
+- `analytics overview --days 7|28|60|365`; `data.metrics.*.points[].value` is `null` when TikTok has no data yet (`dataReady: false`).
+- `video get` analytics `views.points` are **hourly** realtime buckets, not days.
+- `video update` accepts `followers|friends|only-me` (no `everyone`: unobserved on a private account).
+- Outgoing `post/v1` and `post/edit/v1` requests are intercepted: post aborts unless caption and `schedule_time` match; edit aborts unless `aweme_id` and the delete flag match.
