@@ -39,13 +39,19 @@ async function findVideo(page: Page, id: string): Promise<Video> {
 async function markRow(page: Page, id: string): Promise<void> {
   const found = await page.evaluate((id) => {
     document.querySelectorAll("[data-tt-row]").forEach((element) => element.removeAttribute("data-tt-row"));
-    const link = document.querySelector(`a[href*="${id}"]`);
-    let row = link?.parentElement ?? null;
-    while (row && row.querySelectorAll("button").length < 3) row = row.parentElement;
-    row?.setAttribute("data-tt-row", "");
-    return Boolean(row);
+    const link = document.querySelector(`a[href*="/video/${id}"]`);
+    if (!link) return false;
+    const videoLinks = (element: Element) => new Set([...element.querySelectorAll('a[href*="/video/"]')].map((anchor) => anchor.getAttribute("href")));
+    let row: Element | null = link.closest('[data-tt="components_PostTable_Absolute"]');
+    if (!row) {
+      row = link;
+      while (row.parentElement && videoLinks(row.parentElement).size === 1) row = row.parentElement;
+    }
+    if (videoLinks(row).size !== 1 || row.querySelectorAll("button").length === 0) return false;
+    row.setAttribute("data-tt-row", "");
+    return true;
   }, id);
-  if (!found) throw new AppError("UI_CHANGED", `Could not find the row of video ${id} in TikTok Studio.`);
+  if (!found) throw new AppError("UI_CHANGED", `Could not isolate the row of video ${id} in TikTok Studio.`, { hint: "Nothing was changed." });
 }
 
 async function guardEdit(page: Page, id: string, expectDelete: boolean): Promise<() => AppError | undefined> {
